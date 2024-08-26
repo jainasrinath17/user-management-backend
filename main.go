@@ -11,8 +11,11 @@ import (
 	"user-management-backend/internal/repository"
 	"user-management-backend/internal/service"
 
+	_ "user-management-backend/docs"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -49,6 +52,11 @@ func LoadDBConfig() (*DBConfig, error) {
 	return &config, nil
 }
 
+// @USER MANAGEMENT BACKEND
+// @version 1.0
+// @description This is a server for user management.
+// @host localhost:8080
+// @BasePath /
 func main() {
 	config, err := LoadDBConfig()
 	if err != nil {
@@ -79,6 +87,8 @@ func main() {
 		AllowOrigins: []string{"http://localhost:4200"}, // Angular frontend's URL
 		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
 	}))
+	//swagger endpoint
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	// Define routes
 	controller.NewUserController(e, userService)
 
